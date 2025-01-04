@@ -191,7 +191,7 @@ const Login = () => {
             {title()}
           </Heading>
         </Flex>
-        <Show
+        {/* <Show
           when={!needOpt()}
           fallback={
             <Input
@@ -244,13 +244,11 @@ const Login = () => {
             >
               {t("login.remember")}
             </Checkbox>
-            <Text as="a" target="_blank" href={t("login.forget_url")}>
-              {t("login.forget")}
-            </Text>
+            
           </Flex>
-        </Show>
+        </Show> */}
         <HStack w="$full" spacing="$2">
-          <Show when={!useauthn()}>
+          {/* <Show when={!useauthn()}>
             <Button
               colorScheme="primary"
               w="$full"
@@ -265,10 +263,11 @@ const Login = () => {
             >
               {t("login.clear")}
             </Button>
-          </Show>
-          <Button w="$full" loading={loading()} onClick={Login}>
+          </Show> */}
+          <SSOLogin />
+          {/* <Button w="$full" loading={loading()} onClick={Login}>
             {t("login.login")}
-          </Button>
+          </Button> */}
         </HStack>
         <Show when={ldapLoginEnabled}>
           <Checkbox
@@ -279,7 +278,7 @@ const Login = () => {
             {ldapLoginTips}
           </Checkbox>
         </Show>
-        <Button
+        {/* <Button
           w="$full"
           colorScheme="accent"
           onClick={() => {
@@ -291,7 +290,7 @@ const Login = () => {
           }}
         >
           {t("login.use_guest")}
-        </Button>
+        </Button> */}
         <Flex
           mt="$2"
           justifyContent="space-evenly"
@@ -301,7 +300,7 @@ const Login = () => {
         >
           <SwitchLanguageWhite />
           <SwitchColorMode />
-          <SSOLogin />
+          {/* <SSOLogin /> */}
           <Show when={AuthnSignEnabled}>
             <Icon
               cursor="pointer"

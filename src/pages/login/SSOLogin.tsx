@@ -1,10 +1,10 @@
-import { Icon } from "@hope-ui/solid"
+import { Icon, Button } from "@hope-ui/solid"
 import { FiGithub, FiLogIn } from "solid-icons/fi"
 import { BsMicrosoft } from "solid-icons/bs"
 import { AiOutlineGoogle, AiOutlineDingtalk } from "solid-icons/ai"
 import { base_path, changeToken, r } from "~/utils"
 import { getSetting, getSettingBool } from "~/store"
-import { useRouter } from "~/hooks"
+import { useRouter, useT } from "~/hooks"
 import { onCleanup } from "solid-js"
 
 const SSOLogin = () => {
@@ -13,6 +13,7 @@ const SSOLogin = () => {
   const usecompatibility = getSettingBool("sso_compatibility_mode")
   const { searchParams, to } = useRouter()
   const token = searchParams["token"]
+  const t = useT()
   if (token != undefined && token != "") {
     changeToken(token)
     to(decodeURIComponent(searchParams.redirect || base_path || "/"), true)
@@ -55,7 +56,10 @@ const SSOLogin = () => {
         icon = FiLogIn
     }
     return (
-      <Icon cursor="pointer" boxSize="$8" as={icon} p="$0_5" onclick={login} />
+      // <Icon cursor="pointer" boxSize="$8" as={icon} p="$0_5" onclick={login} />
+      <Button w="$full" onClick={login}>
+        {t("login.login")}
+      </Button>
     )
   }
 }

@@ -245,7 +245,7 @@ const Profile = () => {
               </Button>
             }
           >
-            <Button
+            {/* <Button
               colorScheme="danger"
               loading={loading()}
               onClick={() => {
@@ -254,7 +254,8 @@ const Profile = () => {
               }}
             >
               {t("users.disconnect_sso")}
-            </Button>
+            </Button> */}
+            <Heading>{t("users.sso_login_has_enabled")}</Heading>
           </Show>
         </HStack>
       </Show>
