@@ -1,6 +1,14 @@
-import { Button, Heading, HStack, Input, SimpleGrid } from "@hope-ui/solid"
+import {
+  Button,
+  Heading,
+  HStack,
+  Input,
+  FormControl,
+  FormLabel,
+  SimpleGrid,
+} from "@hope-ui/solid"
 import { createSignal } from "solid-js"
-import { MaybeLoading } from "~/components"
+import { MaybeLoading, FolderChooseInput } from "~/components"
 import { useFetch, useManageTitle, useT, useUtil } from "~/hooks"
 import { Group, SettingItem, PResp } from "~/types"
 import { handleResp, notify, r } from "~/utils"
@@ -13,6 +21,7 @@ const OtherSettings = () => {
   const [secret, setSecret] = createSignal("")
   const [qbitUrl, setQbitUrl] = createSignal("")
   const [qbitSeedTime, setQbitSeedTime] = createSignal("")
+  const [pikpakOfflinePath, setPikpakOfflinePath] = createSignal("")
   const [token, setToken] = createSignal("")
   const [settings, setSettings] = createSignal<SettingItem[]>([])
   const [settingsLoading, settingsData] = useFetch(
@@ -30,6 +39,12 @@ const OtherSettings = () => {
         seedtime: qbitSeedTime(),
       }),
   )
+  const [setPikpakLoading, setPikpak] = useFetch(
+    (): PResp<string> =>
+      r.post("/admin/setting/set_pikpak", {
+        url: pikpakOfflinePath(),
+      }),
+  )
   const refresh = async () => {
     const resp = await settingsData()
     handleResp(resp, (data) => {
@@ -39,6 +54,9 @@ const OtherSettings = () => {
       setQbitUrl(data.find((i) => i.key === "qbittorrent_url")?.value || "")
       setQbitSeedTime(
         data.find((i) => i.key === "qbittorrent_seedtime")?.value || "",
+      )
+      setPikpakOfflinePath(
+        data.find((i) => i.key === "pikpak_offline_download_path")?.value || "",
       )
       setSettings(data)
     })
@@ -100,6 +118,34 @@ const OtherSettings = () => {
         }}
       >
         {t("settings_other.set_qbit")}
+      </Button>
+      <Heading my="$2">{t("settings_other.pikpak")}</Heading>
+      <FormControl w="$full" display="flex" flexDirection="column" required>
+        <FormLabel
+          for="pikpak_offline_download_path"
+          display="flex"
+          alignItems="center"
+        >
+          {t(`settings_other.pikpak_offline_download_path`)}
+        </FormLabel>
+        <FolderChooseInput
+          id="pikpak_offline_download_path"
+          value={pikpakOfflinePath()}
+          onChange={(path) => setPikpakOfflinePath(path)}
+          onlyFolder
+        />
+      </FormControl>
+      <Button
+        my="$2"
+        loading={setPikpakLoading()}
+        onClick={async () => {
+          const resp = await setPikpak()
+          handleResp(resp, (data) => {
+            notify.success(data)
+          })
+        }}
+      >
+        {t("settings_other.set_pikpak")}
       </Button>
       <Heading my="$2">{t("settings.token")}</Heading>
       <Input value={token()} readOnly />
