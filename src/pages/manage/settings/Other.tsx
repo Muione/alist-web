@@ -21,6 +21,8 @@ const OtherSettings = () => {
   const [secret, setSecret] = createSignal("")
   const [qbitUrl, setQbitUrl] = createSignal("")
   const [qbitSeedTime, setQbitSeedTime] = createSignal("")
+  const [transmissionUrl, setTransmissionUrl] = createSignal("")
+  const [transmissionSeedTime, setTransmissionSeedTime] = createSignal("")
   const [pikpakOfflinePath, setPikpakOfflinePath] = createSignal("")
   const [token, setToken] = createSignal("")
   const [settings, setSettings] = createSignal<SettingItem[]>([])
@@ -39,6 +41,13 @@ const OtherSettings = () => {
         seedtime: qbitSeedTime(),
       }),
   )
+  const [setTransmissionLoading, setTransmission] = useFetch(
+    (): PResp<string> =>
+      r.post("/admin/setting/set_transmission", {
+        uri: transmissionUrl(),
+        seedtime: transmissionSeedTime(),
+      }),
+  )
   const [setPikpakLoading, setPikpak] = useFetch(
     (): PResp<string> =>
       r.post("/admin/setting/set_pikpak", {
@@ -54,6 +63,12 @@ const OtherSettings = () => {
       setQbitUrl(data.find((i) => i.key === "qbittorrent_url")?.value || "")
       setQbitSeedTime(
         data.find((i) => i.key === "qbittorrent_seedtime")?.value || "",
+      )
+      setTransmissionUrl(
+        data.find((i) => i.key === "transmission_uri")?.value || "",
+      )
+      setTransmissionSeedTime(
+        data.find((i) => i.key === "transmission_seedtime")?.value || "",
       )
       setPikpakOfflinePath(
         data.find((i) => i.key === "pikpak_offline_download_path")?.value || "",
@@ -118,6 +133,31 @@ const OtherSettings = () => {
         }}
       >
         {t("settings_other.set_qbit")}
+      </Button>
+      <Heading my="$2">{t("settings_other.transmission")}</Heading>
+      <SimpleGrid gap="$2" columns={{ "@initial": 1, "@md": 2 }}>
+        <Item
+          {...settings().find((i) => i.key === "transmission_uri")!}
+          value={transmissionUrl()}
+          onChange={(str) => setTransmissionUrl(str)}
+        />
+        <Item
+          {...settings().find((i) => i.key === "transmission_seedtime")!}
+          value={transmissionSeedTime()}
+          onChange={(str) => setTransmissionSeedTime(str)}
+        />
+      </SimpleGrid>
+      <Button
+        my="$2"
+        loading={setTransmissionLoading()}
+        onClick={async () => {
+          const resp = await setTransmission()
+          handleResp(resp, (data) => {
+            notify.success(data)
+          })
+        }}
+      >
+        {t("settings_other.set_transmission")}
       </Button>
       <Heading my="$2">{t("settings_other.pikpak")}</Heading>
       <FormControl w="$full" display="flex" flexDirection="column" required>
